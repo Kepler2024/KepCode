@@ -3,7 +3,7 @@ import Anthropic from "@anthropic-ai/sdk"; // for anthropic api calls
 import 'dotenv/config' // for .env reading
 import pc from "picocolors" // for colorful console logs
 import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
+import { stdin as input, stdout as output } from 'node:process'; // for user input
 
 const client = new Anthropic(); // create a new anthropic client
 
@@ -57,15 +57,17 @@ async function agentLoop(messages:Anthropic.MessageParam[]): Promise<void> {
             messages: messages,
             tools: TOOLS,
             max_tokens:8000,
-        })
+        }) // this is the response from the LLM
         
         messages.push({role:"assistant", content:response.content})
 
+        // We stop the loop when LLM stops calling tools
         if (response.stop_reason !== "tool_use") {
             return
         }
 
         const results:Anthropic.ToolResultBlockParam[] = []
+        // printing the bash commands and outputs
         for (const block of response.content) {
             if (block.type === "tool_use") {
                 const cmd = (block.input as {command:string}).command
@@ -82,12 +84,13 @@ async function agentLoop(messages:Anthropic.MessageParam[]): Promise<void> {
             }
         }
 
+        // push the results during the whole process to the messages array
         messages.push({role:"user", content:results})
     }
 }
 
 // main loop
-const history:Anthropic.MessageParam[] = []
+const history:Anthropic.MessageParam[] = [] // the whole context
 while (true) {
     const rl = readline.createInterface({ input, output });
     const query = await rl.question(pc.cyan("User>> "))
@@ -96,8 +99,9 @@ while (true) {
         break
     }
     history.push({role:"user", content: query})
-    await agentLoop(history)
-    const finalResponse = history[history.length - 1].content
+    await agentLoop(history) // the context will be full after the loop ends
+    const finalResponse = history[history.length - 1].content // print the final response from the LLM, which will be concluding
+    // the final response can be either string or array of blocks
     if (typeof finalResponse === "string") {
         console.log(pc.magenta(`Agent>> ${finalResponse}`))
     } else {
