@@ -91,11 +91,12 @@ async function agentLoop(messages:Anthropic.MessageParam[]): Promise<void> {
 
 // main loop
 const history:Anthropic.MessageParam[] = [] // the whole context
+const rl = readline.createInterface({ input, output });
 while (true) {
-    const rl = readline.createInterface({ input, output });
     const query = await rl.question(pc.cyan("User>> "))
     if (!query || query.toLowerCase() === "quit") {
         console.log(pc.red("Agent Terminated."))
+        rl.close()
         break
     }
     history.push({role:"user", content: query})
