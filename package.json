@@ -1,0 +1,33 @@
+{
+  "name": "kepcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "agentloop.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx tsx agentloop.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kepler2024/KepCode.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Kepler2024/KepCode/issues"
+  },
+  "homepage": "https://github.com/Kepler2024/KepCode#readme",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
+    "dotenv": "^17.4.2",
+    "execa": "^9.6.1",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.0",
+    "typescript": "^6.0.3"
+  }
+}
